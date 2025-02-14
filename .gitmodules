@@ -1,0 +1,6 @@
+[submodule "hidapi"]
+	path = include/lib/hidapi
+	url = https://github.com/libusb/hidapi/
+[submodule "json-c"]
+	path = include/lib/json-c
+	url = https://github.com/json-c/json-c

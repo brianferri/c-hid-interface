@@ -1,0 +1,21 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "CMake: Script debugging",
+      "type": "cmake",
+      "request": "launch",
+      "cmakeDebugType": "script",
+      "scriptPath": "${workspaceFolder}/CMakeLists.txt",
+    },
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "preLaunchTask": "CMake: build",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "program": "${workspaceFolder}/build/output/Debug/${workspaceFolderBasename}"
+    }
+  ]
+}
