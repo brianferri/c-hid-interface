@@ -29,6 +29,7 @@ message(STATUS " ===== Setting up project =====")
 add_executable(${CMAKE_PROJECT_NAME} ./src/_init/main.c)
 
 message(STATUS " ===== Setting compiler options =====")
+
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     message(STATUS "Windows detected.")
     target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE $<$<CONFIG:Debug>:/Wall>)
@@ -42,13 +43,22 @@ endif()
 
 message(STATUS " ===== Setting include directories =====")
 set(CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/output)
-# HIDAPI
 set(HIDAPI_WITH_HIDRAW OFF)
 
 message(STATUS " ===== Adding include directories =====")
-add_subdirectory(./include/lib/hidapi)
+find_package(hidapi REQUIRED CONFIG QUIET)
 
-find_package(json-c CONFIG QUIET)
+if(NOT hidapi_FOUND)
+    message(STATUS "hidapi not found, adding as a subdirectory...")
+    add_subdirectory(./include/lib/hidapi)
+    set(JSONC_TARGET hidapi)
+else()
+    set(HIDAPI_TARGET hidapi::hidapi)
+endif()
+
+message(STATUS "Added ${HIDAPI_TARGET}")
+
+find_package(json-c REQUIRED CONFIG QUIET)
 
 if(NOT json-c_FOUND)
     message(STATUS "json-c not found, adding as a subdirectory...")
@@ -58,5 +68,7 @@ else()
     set(JSONC_TARGET json-c::json-c)
 endif()
 
+message(STATUS "Added ${JSONC_TARGET}")
+
 message(STATUS " ===== Linking libraries =====")
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE hidapi::hidapi ${JSONC_TARGET})
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE ${HIDAPI_TARGET} ${JSONC_TARGET})
